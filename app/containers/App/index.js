@@ -16,6 +16,7 @@ import FeaturePage from 'containers/FeaturePage/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 import Header from 'components/Header';
 import Footer from 'components/Footer';
+import Disclaimer from 'containers/Disclaimer/Loadable';
 
 import GlobalStyle from '../../global-styles';
 
@@ -40,7 +41,8 @@ export default function App() {
       <Header />
       <Switch>
         <Route exact path="/" component={HomePage} />
-        <Route path="/features" component={FeaturePage} />
+        <Route exact path="/features" component={FeaturePage} />
+        <Route exact path="/disclaimer" component={Disclaimer} />
         <Route path="" component={NotFoundPage} />
       </Switch>
       <Footer />

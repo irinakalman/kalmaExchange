@@ -16,4 +16,8 @@ export default defineMessages({
     id: `${scope}.features`,
     defaultMessage: 'Calculator',
   },
+  disclaimer: {
+    id: `${scope}.disclaimer`,
+    defaultMessage: 'Disclaimer',
+  },
 });

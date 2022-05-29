@@ -19,7 +19,7 @@ function Footer() {
         <FormattedMessage
           {...messages.authorMessage}
           values={{
-            author: <A href="https://www.linkedin.com/in/irina-kalman/">Irina Kalman</A>,
+            author: <A href="https://github.com/irinakalman">Irina Kalman</A>,
           }}
         />
       </section>
