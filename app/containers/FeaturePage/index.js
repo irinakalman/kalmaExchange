@@ -17,21 +17,36 @@ import { string } from 'prop-types';
 export default function FeaturePage() {
   let inputEuro;
   const activateLasers = () => {
-    inputEuro = document.querySelector('#euro').value;
-    inputEuro = parseFloat(inputEuro); // convert to float
-    if (parseFloat(inputEuro) > 0 && parseFloat(inputEuro).isNaN !== true) {
-      document.querySelector('#bitcoin').innerText = inputEuro * 0.000037;
-      document.querySelector('#ethereum').innerText = inputEuro * 0.00060042;
-      document.querySelector('#rubli').innerText = inputEuro * 70.56;
-      document.querySelector('#usd').innerText = inputEuro * 1.07;
-      document.querySelector('#inputEu').innerText = 'Doing good';
-    } else if (document.querySelector('#euro').value.length == 0) {
-      document.querySelector('#inputEu').innerText = 'Please enter a number';
-    } else {
-      document.querySelector('#inputEu').innerText =
-        'Invalid input, please enter a number';
-      console.log('Activating Lasers');
-    }
+    // Simple GET request using fetch
+    fetch(
+      'https://api.coingecko.com/api/v3/simple/price?ids=usd&vs_currencies=btc%2Ceth%2Ceur%2Crub&include_last_updated_at=true',
+    )
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        inputEuro = document.querySelector('#euro').value;
+        inputEuro = parseFloat(inputEuro) * (1 / data.usd.eur); // convert to float
+        console.log(inputEuro);
+        if (parseFloat(inputEuro) > 0 && parseFloat(inputEuro).isNaN !== true) {
+          document.querySelector('#bitcoin').innerText =
+            inputEuro * data.usd.btc;
+
+          document.querySelector('#ethereum').innerText =
+            inputEuro * data.usd.eth;
+          document.querySelector('#rubli').innerText = inputEuro * data.usd.rub;
+          document.querySelector('#usd').innerText = inputEuro;
+          const localData = new Date(data.usd.last_updated_at).toLocaleTimeString("en-US");
+          document.querySelector('#updatedPrice').innerText = `${localData} in GMT`; // last updated
+          document.querySelector('#inputEu').innerText = 'Doing good';
+        } else if (document.querySelector('#euro').value.length == 0) {
+          document.querySelector('#inputEu').innerText =
+            'Please enter a number';
+        } else {
+          document.querySelector('#inputEu').innerText =
+            'Invalid input, please enter a number';
+          console.log('Activating Lasers');
+        }
+      });
   };
   return (
     <div>
@@ -58,6 +73,9 @@ export default function FeaturePage() {
       <span>Rubli</span> <span id="rubli" />
       <br />
       <span>USD</span> <span id="usd" />
+      <br />
+      <span>Last Prices updated at</span> <span id="updatedPrice" />
+      <br />
       {/* <button onClick={activateLasers}>Activate Lasers</button> */}
     </div>
   );
