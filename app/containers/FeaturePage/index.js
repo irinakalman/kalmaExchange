@@ -18,36 +18,54 @@ export default function FeaturePage() {
   let inputEuro;
   const activateLasers = () => {
     // Simple GET request using fetch
-    fetch(
-      'https://api.coingecko.com/api/v3/simple/price?ids=usd&vs_currencies=btc%2Ceth%2Ceur%2Crub&include_last_updated_at=true',
-    )
-      .then(response => response.json())
-      .then(data => {
-        console.log(data);
-        inputEuro = document.querySelector('#euro').value;
-        inputEuro = parseFloat(inputEuro) * (1 / data.usd.eur); // convert to float
-        console.log(inputEuro);
-        if (parseFloat(inputEuro) > 0 && parseFloat(inputEuro).isNaN !== true) {
-          document.querySelector('#bitcoin').innerText =
-            inputEuro * data.usd.btc;
+    document.querySelector('#euro').value = document
+      .querySelector('#euro')
+      .value.replace(/\D+/g, ''); // remove all non-digits
+    try {
+      if (document.querySelector('#euro').value.length > 0) {
+        fetch(
+          'https://api.coingecko.com/api/v3/simple/price?ids=usd&vs_currencies=btc%2Ceth%2Ceur%2Crub&include_last_updated_at=true',
+        )
+          .then(response => response.json())
+          .then(data => {
+            console.log(data);
+            inputEuro = document.querySelector('#euro').value;
+            inputEuro = parseFloat(inputEuro) * (1 / data.usd.eur); // convert to float
+            console.log(inputEuro);
+            if (
+              parseFloat(inputEuro) > 0 &&
+              parseFloat(inputEuro).isNaN !== true
+            ) {
+              document.querySelector('#bitcoin').innerText =
+                inputEuro * data.usd.btc;
 
-          document.querySelector('#ethereum').innerText =
-            inputEuro * data.usd.eth;
-          document.querySelector('#rubli').innerText = inputEuro * data.usd.rub;
-          document.querySelector('#usd').innerText = inputEuro;
-          const localData = new Date(data.usd.last_updated_at).toLocaleTimeString("en-US");
-          document.querySelector('#updatedPrice').innerText = `${localData} in GMT`; // last updated
-          document.querySelector('#inputEu').innerText = 'Doing good';
-        } else if (document.querySelector('#euro').value.length == 0) {
-          document.querySelector('#inputEu').innerText =
-            'Please enter a number';
-        } else {
-          document.querySelector('#inputEu').innerText =
-            'Invalid input, please enter a number';
-          console.log('Activating Lasers');
-        }
-      });
+              document.querySelector('#ethereum').innerText =
+                inputEuro * data.usd.eth;
+              document.querySelector('#rubli').innerText =
+                inputEuro * data.usd.rub;
+              document.querySelector('#usd').innerText = inputEuro;
+              const localData = new Date(
+                data.usd.last_updated_at,
+              ).toLocaleTimeString('en-US');
+              document.querySelector(
+                '#updatedPrice',
+              ).innerText = `${localData} in GMT`; // last updated
+              document.querySelector('#inputEu').innerText = 'Doing good';
+            } else if (document.querySelector('#euro').value.length == 0) {
+              document.querySelector('#inputEu').innerText =
+                'Please enter a number';
+            } else {
+              document.querySelector('#inputEu').innerText =
+                'Invalid input, please enter a number';
+              console.log('Activating Lasers');
+            }
+          });
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
+
   return (
     <div>
       <Helmet>
